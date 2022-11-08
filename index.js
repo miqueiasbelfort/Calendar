@@ -42,7 +42,7 @@ app.post('/create', (req, res) => {
 
     const calendar = google.calendar({version: 'v3', auth: oAuth2Client})
 
-    let busy = false
+    var busy = false
 
     // Create a new event start date instance for temp uses in our calendar.
     const eventStartTime = new Date()

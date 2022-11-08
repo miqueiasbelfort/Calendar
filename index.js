@@ -8,6 +8,12 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    msg: 'Hello This is a simple API to connect with google calendar!'
+  })
+})
 app.post('/create', (req, res) => {
     
     const {

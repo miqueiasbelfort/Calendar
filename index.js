@@ -42,8 +42,6 @@ app.post('/create', (req, res) => {
 
     const calendar = google.calendar({version: 'v3', auth: oAuth2Client})
 
-    var busy = false
-
     // Create a new event start date instance for temp uses in our calendar.
     const eventStartTime = new Date()
     eventStartTime.setDate(startDay)
@@ -90,10 +88,8 @@ app.post('/create', (req, res) => {
         (err, ress) => {
           // Check for errors in our query and log them if they exist.
           if (err) return console.error('Free Busy Query Error: ', err)
-  
           // Create an array of all events on our calendar during that time.
           const eventArr = ress.data.calendars.primary.busy
-  
           // Check if event array is empty which means we are not busy
           if (eventArr.length === 0)
             // If we are not busy create a new calendar event.
@@ -106,17 +102,14 @@ app.post('/create', (req, res) => {
                 return
               }
             )
-  
           // If event array is not empty log that we are busy.
-          busy = true
-          return
+          return res.status(422).json({msg: 'Horário Ocupado!'})
         }
-      )
+    )
 
-      if(busy){
-        return res.status(422).json({msg: 'Horário ocupado!'})
-      } 
-      return res.status(200).json({msg: 'Horário agendado!'})
+
+
+    return res.status(200).json({msg: 'Horário agendado!'})
       
 })
 

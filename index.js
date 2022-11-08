@@ -103,13 +103,13 @@ app.post('/create', (req, res) => {
                 // Check for errors and log them if they exist.
                 if (err) return console.error('Error Creating Calender Event:', err)
                 // Else log that the event was created.
-                busy = true
                 return
               }
             )
   
           // If event array is not empty log that we are busy.
-          return busy = true
+          busy = true
+          return
         }
       )
 

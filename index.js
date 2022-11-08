@@ -48,7 +48,7 @@ app.post('/create', (req, res) => {
     const eventStartTime = new Date()
     eventStartTime.setDate(startDay)
     eventStartTime.setMonth(startMonth - 1)
-    eventStartTime.setHours(hours + 3)
+    eventStartTime.setHours(hours)
     eventStartTime.setMinutes(0)
 
     // Create a new event end date instance for temp uses in our calendar.

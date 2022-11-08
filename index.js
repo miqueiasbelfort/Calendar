@@ -43,6 +43,7 @@ app.post('/create', (req, res) => {
     const calendar = google.calendar({version: 'v3', auth: oAuth2Client})
 
     let busy = false
+    let complete = false
 
     // Create a new event start date instance for temp uses in our calendar.
     const eventStartTime = new Date()
@@ -103,7 +104,7 @@ app.post('/create', (req, res) => {
                 // Check for errors and log them if they exist.
                 if (err) return console.error('Error Creating Calender Event:', err)
                 // Else log that the event was created.
-                return console.log('Calendar event successfully created.')
+                return complete = true
               }
             )
   
@@ -114,9 +115,10 @@ app.post('/create', (req, res) => {
 
       if(busy){
         return res.status(422).json({msg: 'Horário ocupado!'})
+      } else if (complete){
+        return res.status(200).json({msg: 'Horário agendado!'})
       }
-      return res.status(200).json({msg: 'Horário agendado!'})
 })
 
 
-app.listen(process.env.PORT || 5000, () =>  console.log(`Backend Server is Running!`))
+app.listen(process.env.PORT || 5000)

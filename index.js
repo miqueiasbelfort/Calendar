@@ -31,15 +31,18 @@ app.post('/create', async(req, res) => {
 
     const {OAuth2} = google.auth
   
+    // Connect to api
     const oAuth2Client = new OAuth2(
         process.env.CLIENT_ID,
         process.env.API_KEY
     )
     
+    // authentication
     oAuth2Client.setCredentials({
         refresh_token: process.env.TOKEN
     })
 
+    // The version of api
     const calendar = google.calendar({version: 'v3', auth: oAuth2Client})
 
     // Create a new event start date instance for temp uses in our calendar.
@@ -56,6 +59,7 @@ app.post('/create', async(req, res) => {
     eventEndTime.setMonth(endMonth - 1)
     eventEndTime.setMinutes(0)
 
+    // Get all events in date eventStartTime 
     let getEventsInCalendar = await calendar.events.list({
       calendarId: 'primary',
       timeMin: eventStartTime,
@@ -64,13 +68,22 @@ app.post('/create', async(req, res) => {
     });
 
     let items = getEventsInCalendar['data']['items'];
+    
+    let busy = false
 
-    //console.log(items)
+    // Search if there are date in items
+    items.forEach(element => {
+      // Transform the date of items in date of system
+      const dateTimeNew = new Date(element.start.dateTime)
 
-    if(items.length >= 1){
-      return res.status(422).json({msg: 'Horário ocupado!'})
-    }
+      // Verify if the dateTime is equals to eventStartTime
+      if(dateTimeNew.getHours() === eventStartTime.getHours()){
+        busy = true
+        return 
+      }
+    });
 
+    // Create a event to calendar
     const event = {
         summary: `NOME: ${name} - EMPRESA: ${company}`,
         location: location,
@@ -89,7 +102,12 @@ app.post('/create', async(req, res) => {
         },
     }
 
-      calendar.freebusy.query(
+    // If there are don't date in this time, create a new event
+    if(busy == false){
+      calendar.events.insert({calendarId: 'primary', resource: event})
+    }
+
+      /*calendar.freebusy.query(
         {
           resource: {
             timeMin: eventStartTime,
@@ -124,10 +142,16 @@ app.post('/create', async(req, res) => {
           return 
         }
     )
+  */
+
+    // if there are items in this time
+    if(busy){
+      return res.status(422).json({msg: 'Horário ocupado!'})
+    }
 
     return res.status(200).json({msg: 'Horário agendado!'})
       
 })
 
 
-app.listen(process.env.PORT || 5000)
+app.listen(process.env.PORT || 5000, () => console.log('Server is running!'))

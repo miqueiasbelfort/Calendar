@@ -64,7 +64,7 @@ app.post('/create', async(req, res) => {
     });
 
     let items = getEventsInCalendar['data']['items'];
-    
+
     //console.log(items)
 
     if(items.length >= 1){

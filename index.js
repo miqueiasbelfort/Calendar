@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
     msg: 'Hello This is a simple API to connect with google calendar!'
   })
 })
-app.post('/create', (req, res) => {
+app.post('/create', async(req, res) => {
     
     const {
         name,
@@ -56,7 +56,20 @@ app.post('/create', (req, res) => {
     eventEndTime.setMonth(endMonth - 1)
     eventEndTime.setMinutes(0)
 
-    //const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let getEventsInCalendar = await calendar.events.list({
+      calendarId: 'primary',
+      timeMin: eventStartTime,
+      timeMax: eventEndTime,
+      timeZone: 'America/Sao_Paulo'
+    });
+
+    let items = getEventsInCalendar['data']['items'];
+    
+    //console.log(items)
+
+    if(items.length >= 1){
+      return res.status(422).json({msg: 'Horário ocupado!'})
+    }
 
     const event = {
         summary: `NOME: ${name} - EMPRESA: ${company}`,
@@ -76,7 +89,7 @@ app.post('/create', (req, res) => {
         },
     }
 
-    calendar.freebusy.query(
+      calendar.freebusy.query(
         {
           resource: {
             timeMin: eventStartTime,
@@ -88,26 +101,29 @@ app.post('/create', (req, res) => {
         (err, ress) => {
           // Check for errors in our query and log them if they exist.
           if (err) return console.error('Free Busy Query Error: ', err)
+
           // Create an array of all events on our calendar during that time.
           const eventArr = ress.data.calendars.primary.busy
+
           // Check if event array is empty which means we are not busy
           if (eventArr.length === 0)
+
             // If we are not busy create a new calendar event.
             return calendar.events.insert(
               { calendarId: 'primary', resource: event },
               err => {
                 // Check for errors and log them if they exist.
                 if (err) return console.error('Error Creating Calender Event:', err)
+
                 // Else log that the event was created.
                 return
               }
             )
+
           // If event array is not empty log that we are busy.
-          return res.status(422).json({msg: 'Horário Ocupado!'})
+          return 
         }
     )
-
-
 
     return res.status(200).json({msg: 'Horário agendado!'})
       

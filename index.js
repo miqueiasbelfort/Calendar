@@ -26,8 +26,7 @@ app.post('/create', async(req, res) => {
         endDay,
         startMonth,
         endMonth,
-        hours,
-        year
+        hours
     } = req.body
 
     const {OAuth2} = google.auth
@@ -52,7 +51,6 @@ app.post('/create', async(req, res) => {
     eventStartTime.setMonth(startMonth - 1)
     eventStartTime.setHours(hours + 3)
     eventStartTime.setMinutes(0)
-    eventStartTime.setFullYear(year)
 
     // Create a new event end date instance for temp uses in our calendar.
     const eventEndTime = new Date()
@@ -60,7 +58,6 @@ app.post('/create', async(req, res) => {
     eventEndTime.setHours(hours + 4)
     eventEndTime.setMonth(endMonth - 1)
     eventEndTime.setMinutes(0)
-    eventEndTime.setFullYear(year)
 
     // Get all events in date eventStartTime 
     let getEventsInCalendar = await calendar.events.list({

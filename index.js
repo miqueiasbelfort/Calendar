@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const {google} = require('googleapis')
+const Meeting = require('google-meet-api').meet
 
 const app = express()
 
@@ -14,143 +14,50 @@ app.get('/', (req, res) => {
     msg: 'Hello This is a simple API to connect with google calendar!'
   })
 })
+
+
 app.post('/create', async(req, res) => {
     
-    const {
-        name,
-        company,
-        phoneNumber,
-        email,
-        location,
-        startDay,
-        endDay,
-        startMonth,
-        endMonth,
-        hours
-    } = req.body
+  const {
+      name,
+      company,
+      phoneNumber,
+      email,
+      location,
+      day,
+      month,
+      hours,
+      minutes,
+      year
+  } = req.body
 
-    const {OAuth2} = google.auth
+  // env
+  const token = process.env.TOKEN
+  const clientId = process.env.CLIENT_ID
+  const apiKey = process.env.API_KEY
+
+  const description = `
+    EMPRESA: ${company}
+    CONTATO: ${phoneNumber}
+    EMAIL: ${email}
+  `
   
-    // Connect to api
-    const oAuth2Client = new OAuth2(
-        process.env.CLIENT_ID,
-        process.env.API_KEY
-    )
-    
-    // authentication
-    oAuth2Client.setCredentials({
-        refresh_token: process.env.TOKEN
-    })
-
-    // The version of api
-    const calendar = google.calendar({version: 'v3', auth: oAuth2Client})
-
-    // Create a new event start date instance for temp uses in our calendar.
-    const eventStartTime = new Date()
-    eventStartTime.setDate(startDay)
-    eventStartTime.setMonth(startMonth - 1)
-    eventStartTime.setHours(hours + 3)
-    eventStartTime.setMinutes(0)
-
-    // Create a new event end date instance for temp uses in our calendar.
-    const eventEndTime = new Date()
-    eventEndTime.setDate(endDay)
-    eventEndTime.setHours(hours + 4)
-    eventEndTime.setMonth(endMonth - 1)
-    eventEndTime.setMinutes(0)
-
-    // Get all events in date eventStartTime 
-    let getEventsInCalendar = await calendar.events.list({
-      calendarId: 'primary',
-      timeMin: eventStartTime,
-      timeMax: eventEndTime,
-      timeZone: 'America/Sao_Paulo'
-    });
-
-    let items = getEventsInCalendar['data']['items'];
-    
-    let busy = false
-
-    // Search if there are date in items
-    items.forEach(element => {
-      // Transform the date of items in date of system
-      const dateTimeNew = new Date(element.start.dateTime)
-
-      // Verify if the dateTime is equals to eventStartTime
-      if(dateTimeNew.getHours() === eventStartTime.getHours()){
-        busy = true
-        return 
-      }
-    });
-
-    // Create a event to calendar
-    const event = {
-        summary: `NOME: ${name} - EMPRESA: ${company}`,
-        location: location,
-        description: `
-        CONTATO: ${phoneNumber}
-        EMAIL: ${email}
-        `,
-        colorId: 4,
-        start: {
-          dateTime: eventStartTime,
-          timeZone: 'America/Sao_Paulo',
-        },
-        end: {
-          dateTime: eventEndTime,
-          timeZone: 'America/Sao_Paulo',
-        },
+  Meeting({
+    clientId : clientId,
+    clientSecret : apiKey,
+    refreshToken : token,
+    date : `${year}-${month}-${day}`,
+    time : `${hours}:${minutes}`,
+    summary : name,
+    location : location,
+    description : description
+  }).then(result => {
+    if(result !== null){
+      return res.status(200).json({msg: `Horário agendado! Link para a reunião: ${result}`})
     }
+    return res.status(422).json({msg: 'Horário ocupado, por favor escolha outra hora para marcar uma reunião!'})
+  })
 
-    // If there are don't date in this time, create a new event
-    if(busy == false){
-      calendar.events.insert({calendarId: 'primary', resource: event})
-    }
-
-      /*calendar.freebusy.query(
-        {
-          resource: {
-            timeMin: eventStartTime,
-            timeMax: eventEndTime,
-            timeZone: 'America/Sao_Paulo',
-            items: [{ id: 'primary' }],
-          },
-        },
-        (err, ress) => {
-          // Check for errors in our query and log them if they exist.
-          if (err) return console.error('Free Busy Query Error: ', err)
-
-          // Create an array of all events on our calendar during that time.
-          const eventArr = ress.data.calendars.primary.busy
-
-          // Check if event array is empty which means we are not busy
-          if (eventArr.length === 0)
-
-            // If we are not busy create a new calendar event.
-            return calendar.events.insert(
-              { calendarId: 'primary', resource: event },
-              err => {
-                // Check for errors and log them if they exist.
-                if (err) return console.error('Error Creating Calender Event:', err)
-
-                // Else log that the event was created.
-                return
-              }
-            )
-
-          // If event array is not empty log that we are busy.
-          return 
-        }
-    )
-  */
-
-    // if there are items in this time
-    if(busy){
-      return res.status(422).json({msg: 'Horário ocupado!'})
-    }
-
-    return res.status(200).json({msg: 'Horário agendado!'})
-      
 })
 
 

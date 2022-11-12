@@ -83,6 +83,11 @@ app.post('/create', async(req, res) => {
         });
 
         let events = result.data.items;
+        let busy = false
+        
+        if(events.length){
+          busy = true
+        }
 
         // Create a new event start date instance for teacher in their calendar.
         const eventStartTime = new Date();
@@ -114,18 +119,20 @@ app.post('/create', async(req, res) => {
                 timeZone: 'America/Sao_Paulo',
             },
         }
-       
-        let link = await calendar.events.insert({
-          calendarId: 'primary', 
-          conferenceDataVersion: '1', 
-          resource: event 
-        })
 
-        if(result.data.items.length >= 1){
-          return res.status(422).json({msg: 'Horário ocupado!'})
+        if(busy == false){
+          let link = await calendar.events.insert({
+            calendarId: 'primary', 
+            conferenceDataVersion: '1', 
+            resource: event 
+          })
+          return res.status(200).json({msg: link.data.hangoutLink})
         }
 
-        return res.status(200).json({msg: link.data.hangoutLink})
+        
+        return res.status(422).json({msg: 'Horário ocupado!'})
+        
+
 })
 
 

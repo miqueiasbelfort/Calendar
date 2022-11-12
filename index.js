@@ -87,12 +87,19 @@ app.post('/create', async(req, res) => {
 
         let events = result.data.items;
 
-        if (events.length >= 1) {
+        let busy = false
+
+        events.forEach(element => {
+          if(element){
+            busy = true
+            return
+          }
+        })
+
+        if (busy == true) {
             // console.log("you are busy for this time slot !");
             return res.status(422).json({msg: 'Horário já ocupdado!'});
         }
-
-        //checking end
 
         // Create a new event start date instance for teacher in their calendar.
         const eventStartTime = new Date();

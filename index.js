@@ -79,15 +79,12 @@ app.post('/create', async(req, res) => {
             calendarId: 'primary',
             timeMin: end1,
             timeMax: end2,
-            maxResults: 1,
-            singleEvents: true,
-            orderBy: 'startTime',
             timeZone: 'America/Sao_Paulo'
         });
 
         let events = result.data.items;
         let busy = false
-        //console.log(events)
+        console.log(events)
 
         events.forEach(element => {
           const timeNewStart = new Date(element.start.dateTime)

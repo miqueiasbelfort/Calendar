@@ -52,13 +52,14 @@ app.post('/create', async(req, res) => {
 
 
         let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
-        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:45` + ":30");
+        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
 
 
-        let end1 = `${year}-${month}-${day}` + "T" + (x.getUTCHours()) + ":" + (x.getUTCMinutes()) + ":00" + ".000Z";
-        let end2 = `${year}-${month}-${day}` + "T" + (y.getUTCHours()) + ":" + (y.getUTCMinutes()) + ":00" + ".000Z";
+        let end1 = `${year}-${month}-${day}` + "T" + (x.getUTCHours()) + ":" + `${(x.getUTCMinutes())}${(x.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+        let end2 = `${year}-${month}-${day}` + "T" + (y.getUTCHours() + 1) + ":" + (y.getUTCMinutes()) + ":00" + ".000Z";
 
-
+        console.log(end1)
+        console.log(end2)
 
         //setting details for teacher
         let oAuth2Client = new OAuth2(
@@ -79,14 +80,16 @@ app.post('/create', async(req, res) => {
             calendarId: 'primary',
             timeMin: end1,
             timeMax: end2,
+            maxResults: 1,
+            singleEvents: true,
+            orderBy: 'startTime',
             timeZone: 'America/Sao_Paulo'
         });
 
         let events = result.data.items;
-        let busy = false
-        
+
         if(events.length){
-          busy = true
+          return res.status(422).json({msg: 'Horário Agendado!'})
         }
 
         // Create a new event start date instance for teacher in their calendar.
@@ -119,19 +122,15 @@ app.post('/create', async(req, res) => {
                 timeZone: 'America/Sao_Paulo',
             },
         }
-
-        if(busy == false){
-          let link = await calendar.events.insert({
-            calendarId: 'primary', 
-            conferenceDataVersion: '1', 
-            resource: event 
-          })
-          return res.status(200).json({msg: link.data.hangoutLink})
-        }
-
+      
+        let link = await calendar.events.insert({
+          calendarId: 'primary', 
+          conferenceDataVersion: '1', 
+          resource: event 
+        })
         
-        return res.status(422).json({msg: 'Horário ocupado!'})
-        
+        //link.data.hangoutLink
+        return res.status(200).json({msg: link.data.hangoutLink})
 
 })
 

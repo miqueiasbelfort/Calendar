@@ -1,7 +1,10 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const Meeting = require('google-meet-api').meet
+// const Meeting = require('google-meet-api').meet
+
+const { google } = require('googleapis');
+const { OAuth2 } = google.auth
 
 const app = express()
 
@@ -42,21 +45,97 @@ app.post('/create', async(req, res) => {
     EMAIL: ${email}
   `
   
-  Meeting({
-    clientId : clientId,
-    clientSecret : apiKey,
-    refreshToken : token,
-    date : `${year}-${month}-${day}`,
-    time : `${hours}:${minutes}`,
-    summary : name,
-    location : location,
-    description : description
-  }).then(result => {
-    if(result !== null){
-      return res.status(200).json({msg: result})
-    }
-    return res.status(422).json({msg: 'Horário ocupado, por favor escolha outra hora para marcar uma reunião!'})
-  })
+    const numDate1End = Number(hours) + 1
+
+        let date1 = `${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30";
+        let date2 = `${year}-${month}-${day}` + "T" + `${numDate1End}` + `:${minutes}` + ":30";
+
+
+        let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
+        let y = new Date(`${year}-${month}-${day}` + "T" + hours + ":45" + ":30");
+
+
+        let end1 = `${year}-${month}-${day}` + "T" + (x.getUTCHours()) + ":" + (x.getUTCMinutes()) + ":00" + ".000Z";
+        let end2 = `${year}-${month}-${day}` + "T" + (y.getUTCHours()) + ":" + (y.getUTCMinutes()) + ":00" + ".000Z";
+
+
+
+        //setting details for teacher
+        let oAuth2Client = new OAuth2(
+            clientId,
+            apiKey
+        )
+
+        oAuth2Client.setCredentials({
+            refresh_token: token,
+        });
+
+        // Create a new calender instance.
+        let calendar = google.calendar({ version: 'v3', auth: oAuth2Client })
+
+
+        //checking whether teacher is budy or not
+        let result = await calendar.events.list({
+            calendarId: 'primary',
+            timeMin: end1,
+            timeMax: end2,
+            maxResults: 1,
+            singleEvents: true,
+            orderBy: 'startTime',
+        });
+
+        
+
+        let events = result.data.items;
+        if (events.length) {
+            // console.log("you are busy for this time slot !");
+            return res.status(422).json({msg: 'Horário já ocupdado!'});
+        }
+
+        //checking end
+
+        // Create a new event start date instance for teacher in their calendar.
+        const eventStartTime = new Date();
+        eventStartTime.setDate(day);
+        const eventEndTime = new Date();
+        eventEndTime.setDate(day);
+        eventEndTime.setMinutes(eventStartTime.getMinutes() + 45);
+
+
+
+        // Create a dummy event for temp users in our calendar
+        const event = {
+            summary: name,
+            location: location,
+            description: description,
+            colorId: 4,
+            conferenceData: {
+                createRequest: {
+                    requestId: "zzz",
+                    conferenceSolutionKey: {
+                        type: "hangoutsMeet"
+                    }
+                }
+            },
+            start: {
+                dateTime: date1,
+                timeZone: 'America/Sao_Paulo',
+            },
+            end: {
+                dateTime: date2,
+                timeZone: 'America/Sao_Paulo',
+            },
+        }
+
+
+       
+            let link = await calendar.events.insert({
+                calendarId: 'primary', 
+                conferenceDataVersion: '1', 
+                resource: event 
+            })
+
+            return res.status(200).json({msg: link.data.hangoutLink})
 
 })
 

@@ -86,14 +86,22 @@ app.post('/create', async(req, res) => {
         });
 
         let events = result.data.items;
-
         let busy = false
+        console.log(events)
 
         events.forEach(element => {
-          if(element){
+          const timeNewStart = new Date(element.start.dateTime)
+          const timeNewEnd = new Date(element.end.dateTime)
+  
+          const newDateStart = new Date(date1)
+          const newDateEnd = new Date(date2)
+          
+          if(timeNewStart.getHours() == newDateStart.getHours() || timeNewEnd.getHours() == newDateEnd.getHours()){
             busy = true
-            return
           }
+          // console.log(`${timeNewStart.getHours()}:${timeNewStart.getMinutes()}`)
+          // console.log(`${newDateStart.getHours()}:${newDateStart.getMinutes()}`)
+
         })
 
         if (busy == true) {

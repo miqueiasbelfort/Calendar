@@ -53,7 +53,7 @@ app.post('/create', async(req, res) => {
     description : description
   }).then(result => {
     if(result !== null){
-      return res.status(200).json({msg: `Horário agendado! Link para a reunião: ${result}`})
+      return res.status(200).json({msg: result})
     }
     return res.status(422).json({msg: 'Horário ocupado, por favor escolha outra hora para marcar uma reunião!'})
   })

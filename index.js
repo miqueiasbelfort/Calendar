@@ -87,7 +87,7 @@ app.post('/create', async(req, res) => {
 
         let events = result.data.items;
 
-        if (events.length) {
+        if (events.length >= 1) {
             // console.log("you are busy for this time slot !");
             return res.status(422).json({msg: 'Horário já ocupdado!'});
         }

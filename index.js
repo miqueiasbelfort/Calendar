@@ -83,23 +83,6 @@ app.post('/create', async(req, res) => {
         });
 
         let events = result.data.items;
-        let busy = false
-        console.log(events)
-
-        events.forEach(element => {
-          const timeNewStart = new Date(element.start.dateTime)
-          const timeNewEnd = new Date(element.end.dateTime)
-  
-          const newDateStart = new Date(date1)
-          const newDateEnd = new Date(date2)
-
-          if(timeNewStart.getHours() == newDateStart.getHours() || timeNewEnd.getHours() == newDateEnd.getHours()){
-            busy = true
-            return console.log('Ocupado!')
-          }
-          // console.log(`${timeNewStart.getHours()}:${timeNewStart.getMinutes()}`)
-          // console.log(`${newDateStart.getHours()}:${newDateStart.getMinutes()}`)
-        })
 
         // Create a new event start date instance for teacher in their calendar.
         const eventStartTime = new Date();
@@ -132,16 +115,17 @@ app.post('/create', async(req, res) => {
             },
         }
        
-        if(events.length || busy){
+        let link = await calendar.events.insert({
+          calendarId: 'primary', 
+          conferenceDataVersion: '1', 
+          resource: event 
+        })
+
+        if(result.data.items.length >= 1){
           return res.status(422).json({msg: 'Horário ocupado!'})
-        } else {
-          let link = await calendar.events.insert({
-            calendarId: 'primary', 
-            conferenceDataVersion: '1', 
-            resource: event 
-          })
-          return res.status(200).json({msg: link.data.hangoutLink})
         }
+
+        return res.status(200).json({msg: link.data.hangoutLink})
 })
 
 

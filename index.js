@@ -52,7 +52,7 @@ app.post('/create', async(req, res) => {
 
 
         let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
-        let y = new Date(`${year}-${month}-${day}` + "T" + hours + ":45" + ":30");
+        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:45` + ":30");
 
 
         let end1 = `${year}-${month}-${day}` + "T" + (x.getUTCHours()) + ":" + (x.getUTCMinutes()) + ":00" + ".000Z";
@@ -82,11 +82,11 @@ app.post('/create', async(req, res) => {
             maxResults: 1,
             singleEvents: true,
             orderBy: 'startTime',
+            timeZone: 'America/Sao_Paulo'
         });
 
-        
-
         let events = result.data.items;
+
         if (events.length) {
             // console.log("you are busy for this time slot !");
             return res.status(422).json({msg: 'Horário já ocupdado!'});
@@ -100,8 +100,6 @@ app.post('/create', async(req, res) => {
         const eventEndTime = new Date();
         eventEndTime.setDate(day);
         eventEndTime.setMinutes(eventStartTime.getMinutes() + 45);
-
-
 
         // Create a dummy event for temp users in our calendar
         const event = {
@@ -126,14 +124,12 @@ app.post('/create', async(req, res) => {
                 timeZone: 'America/Sao_Paulo',
             },
         }
-
-
        
-            let link = await calendar.events.insert({
-                calendarId: 'primary', 
-                conferenceDataVersion: '1', 
-                resource: event 
-            })
+        let link = await calendar.events.insert({
+            calendarId: 'primary', 
+            conferenceDataVersion: '1', 
+            resource: event 
+        })
 
             return res.status(200).json({msg: link.data.hangoutLink})
 

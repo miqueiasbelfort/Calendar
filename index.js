@@ -66,8 +66,8 @@ app.post('/create', async(req, res) => {
         // consloe.log(end1)
         // console.log(end2)
 
-        const testTimerStart = new Date(date1)
-        const testTimerEnd = new Date(date2)
+        const testTimerStart = new Date(end1)
+        const testTimerEnd = new Date(end2)
 
         //setting details for teacher
         let oAuth2Client = new OAuth2(

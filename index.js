@@ -130,7 +130,13 @@ app.post('/create', async(req, res) => {
         })
         
         //link.data.hangoutLink
-        return res.status(200).json({msg: link.data.hangoutLink})
+        return res.status(200).json({
+          msg: link.data.hangoutLink,
+          date1: date1,
+          date2: date2,
+          end1: end1,
+          end2: end2
+        })
 
 })
 

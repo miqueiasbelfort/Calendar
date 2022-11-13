@@ -51,8 +51,8 @@ app.post('/create', async(req, res) => {
         let date2 = `${year}-${month}-${day}` + "T" + `${numDate1End < 10 ? '0' : ''}${numDate1End}` + `:${minutes}` + ":30";
 
 
-        let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
-        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
+        let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":00");
+        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":00");
 
         const hoursStart = x.getUTCHours()
         const hoursEnd = y.getUTCHours() + 1
@@ -60,18 +60,10 @@ app.post('/create', async(req, res) => {
         const addZeroStart = hoursStart < 10 ? '0' : ''
         const addZeroEnd = hoursEnd < 10 ? '0' : ''
 
-        let end1 = `${year}-${month}-${day}` + "T" + `${addZeroStart}${hoursStart}` + ":" + `${(x.getUTCMinutes())}${(x.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
-        let end2 = `${year}-${month}-${day}` + "T" + `${addZeroEnd}${hoursEnd}` + ":" + `${(y.getUTCMinutes())}${(y.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+        let end1 = `${year}-${month}-${day}` + "T" + `${addZeroStart}${hoursStart}` + ":" + `${(x.getMinutes())}${(x.getMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+        let end2 = `${year}-${month}-${day}` + "T" + `${addZeroEnd}${hoursEnd}` + ":" + `${(y.getMinutes())}${(y.getMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
 
-        // consloe.log(end1)
-        // console.log(end2)
-
-        const testTimerStart = new Date(end1)
-        const testTimerEnd = new Date(end2)
-
-        // console.log(testTimerStart)
-        // console.log(testTimerEnd)
-
+  
         //setting details for teacher
         let oAuth2Client = new OAuth2(
             clientId,
@@ -89,8 +81,8 @@ app.post('/create', async(req, res) => {
         //checking whether teacher is budy or not
         let result = await calendar.events.list({
             calendarId: 'primary',
-            timeMin: testTimerStart,
-            timeMax: testTimerEnd,
+            timeMin: end1,
+            timeMax: end2,
             maxResults: 1,
             singleEvents: true,
             orderBy: 'startTime',
@@ -98,6 +90,13 @@ app.post('/create', async(req, res) => {
         });
 
         let events = result.data.items;
+
+        events.forEach(element => {
+          if(new Date(element.start.dateTime) == new Date(date1)){
+            return res.status(422).json('Horário agendado!')
+          }
+          console.log(new Date(element.start.dateTime) == new Date(date1))
+        })
 
         if(events.length){
           return res.status(422).json({msg: 'Horário Agendado!'})

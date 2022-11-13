@@ -90,16 +90,17 @@ app.post('/create', async(req, res) => {
         });
 
         let events = result.data.items;
+        let busy;
 
         events.forEach(element => {
-          if(new Date(element.start.dateTime) == new Date(date1)){
-            return res.status(422).json('Horário agendado!')
+          if(element){
+            busy = true
           }
-          console.log(new Date(element.start.dateTime) == new Date(date1))
         })
 
-        if(events.length){
-          return res.status(422).json({msg: 'Horário Agendado!'})
+
+        if(busy){
+          return res.status(422).json({msg: 'Horário Ocupado!'})
         }
 
         // Create a new event start date instance for teacher in their calendar.
@@ -138,6 +139,8 @@ app.post('/create', async(req, res) => {
           conferenceDataVersion: '1', 
           resource: event 
         })
+
+        console.log(link)
         
         //link.data.hangoutLink
         return res.status(200).json({

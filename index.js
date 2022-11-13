@@ -66,6 +66,9 @@ app.post('/create', async(req, res) => {
         // consloe.log(end1)
         // console.log(end2)
 
+        const testTimerStart = new Date(date1)
+        const testTimerEnd = new Date(date2)
+
         //setting details for teacher
         let oAuth2Client = new OAuth2(
             clientId,
@@ -83,8 +86,8 @@ app.post('/create', async(req, res) => {
         //checking whether teacher is budy or not
         let result = await calendar.events.list({
             calendarId: 'primary',
-            timeMin: end1,
-            timeMax: end2,
+            timeMin: testTimerStart,
+            timeMax: testTimerEnd,
             maxResults: 1,
             singleEvents: true,
             orderBy: 'startTime',

@@ -54,8 +54,8 @@ app.post('/create', async(req, res) => {
         let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
         let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
 
-        const hoursStart = x.getUTCHours() - 3
-        const hoursEnd = (y.getUTCHours() - 3) + 1
+        const hoursStart = x.getUTCHours()
+        const hoursEnd = y.getUTCHours() + 1
 
         const addZeroStart = hoursStart < 10 ? '0' : ''
         const addZeroEnd = hoursEnd < 10 ? '0' : ''

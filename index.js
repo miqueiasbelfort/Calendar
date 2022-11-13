@@ -48,18 +48,23 @@ app.post('/create', async(req, res) => {
     const numDate1End = Number(hours) + 1
 
         let date1 = `${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30";
-        let date2 = `${year}-${month}-${day}` + "T" + `${numDate1End}` + `:${minutes}` + ":30";
+        let date2 = `${year}-${month}-${day}` + "T" + `${numDate1End < 10 ? '0' : ''}${numDate1End}` + `:${minutes}` + ":30";
 
 
         let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
         let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30");
 
+        const hoursStart = x.getUTCHours() - 3
+        const hoursEnd = (y.getUTCHours() - 3) + 1
 
-        let end1 = `${year}-${month}-${day}` + "T" + (x.getUTCHours()) + ":" + `${(x.getUTCMinutes())}${(x.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
-        let end2 = `${year}-${month}-${day}` + "T" + (y.getUTCHours() + 1) + ":" + (y.getUTCMinutes()) + ":00" + ".000Z";
+        const addZeroStart = hoursStart < 10 ? '0' : ''
+        const addZeroEnd = hoursEnd < 10 ? '0' : ''
 
-        console.log(end1)
-        console.log(end2)
+        let end1 = `${year}-${month}-${day}` + "T" + `${addZeroStart}${hoursStart}` + ":" + `${(x.getUTCMinutes())}${(x.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+        let end2 = `${year}-${month}-${day}` + "T" + `${addZeroEnd}${hoursEnd}` + ":" + `${(y.getUTCMinutes())}${(y.getUTCMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+
+        // consloe.log(end1)
+        // console.log(end2)
 
         //setting details for teacher
         let oAuth2Client = new OAuth2(
@@ -132,10 +137,10 @@ app.post('/create', async(req, res) => {
         //link.data.hangoutLink
         return res.status(200).json({
           msg: link.data.hangoutLink,
-          date1: date1,
-          date2: date2,
-          end1: end1,
-          end2: end2
+          date: date1,
+          dateEnd: date2,
+          endStart: end1,
+          endEnd: end2
         })
 
 })

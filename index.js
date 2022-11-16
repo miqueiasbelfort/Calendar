@@ -1,7 +1,9 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-// const Meeting = require('google-meet-api').meet
+const nodemailer = require('nodemailer')
+const hbs = require('nodemailer-express-handlebars')
+const path = require('path')
 
 const { google } = require('googleapis');
 const { OAuth2 } = google.auth
@@ -153,5 +155,65 @@ app.post('/create', async(req, res) => {
 
 })
 
+app.post('/send', async (req, res) => {
+
+  const {
+    email,
+    name,
+    date,
+    time,
+    link
+  } = req.body
+
+  const trasporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: 'se8292829@gmail.com',
+      pass: process.env.PASS,
+      clientId: process.env.SEND_CLIENT_ID,
+      clientSecret: process.env.SEND_API_KEY,
+      refreshToken: process.env.SEND_TOKEN
+    }
+  })
+
+  trasporter.use('compile', hbs({
+    viewEngine: {
+      extname: '.html',
+      partialsDir: path.resolve('./src/view'),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve('./src/view'),
+    extName: '.handlebars'
+  }))
+    
+  try {
+    
+    const timerSplit = time.split(':')
+    const numTimer = Number(timerSplit[0])
+    console.log(numTimer)
+
+    await trasporter.sendMail({
+      subject: `Olá ${name}, você agendou um horário para falar com nossa equipe!`,
+      from: `Ledercorp <se8292829@gmail.com>`,
+      to: [email],
+      template: 'email',
+      context: {
+        date: date,
+        time: time,
+        link: link,
+        timeType: `${numTimer > 12 ? 'pm' : 'am'}`
+      }
+    })
+    return res.status(200).json('Email Send')
+
+  } catch (error) {
+    return res.status(422).json({
+      msg: 'Erro',
+      error
+    })
+  }
+
+})
 
 app.listen(process.env.PORT || 5000, () => console.log('Server is running!'))

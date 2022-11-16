@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledercorp - Horário agendado!</title>
+
+    <style>
+        body {
+            width: 600px;
+        }
+        .header {
+            width: 100%;
+            background-color: #fab702;
+            align-items: center;
+            justify-content: center;
+        }
+        .title {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .main{
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #fff4d8;
+        }
+        .text {
+            text-align: center;
+            margin: 10px 0;
+            max-width: 100%;
+        }
+        .info {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .link {
+            color: #fab702;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .linktex {
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Obrigado por ter escolhido a Ledercorp!</h1>
+    </div>
+    <div class="main">
+        <h2 class="text">Não se esqueça do horário que você marcou conosco.</h2>
+        <p class="text">Caso houver alteração na data agendada ou hora, nosso time vai lhe notificar com um e-mail, para você não ficar perdido(a)!</p>
+
+
+        <p class="info">Nossa reunião acontece na data: {{date}} as {{time}}{{timeType}}</p>
+ 
+        <p class="linktex">Acesse o meet para falar com um profissional do nosso time, <a href={{link}} class="link">Clique aqui!</a></p>
+
+    </div>
+</body>
+</html>

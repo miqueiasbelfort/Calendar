@@ -142,15 +142,11 @@ app.post('/create', async(req, res) => {
           resource: event 
         })
 
-        console.log(link)
+       // console.log(link)
         
         //link.data.hangoutLink
         return res.status(200).json({
-          msg: link.data.hangoutLink,
-          date: date1,
-          dateEnd: date2,
-          endStart: end1,
-          endEnd: end2
+          msg: link.data.hangoutLink
         })
 
 })
@@ -169,11 +165,11 @@ app.post('/send', async (req, res) => {
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: 'se8292829@gmail.com',
+      user: 'leadercorp.app@gmail.com',
       pass: process.env.PASS,
-      clientId: process.env.SEND_CLIENT_ID,
-      clientSecret: process.env.SEND_API_KEY,
-      refreshToken: process.env.SEND_TOKEN
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.API_KEY,
+      refreshToken: process.env.TOKEN
     }
   })
 
@@ -191,7 +187,7 @@ app.post('/send', async (req, res) => {
     
     const timerSplit = time.split(':')
     const numTimer = Number(timerSplit[0])
-    console.log(numTimer)
+    //console.log(numTimer)
 
     await trasporter.sendMail({
       subject: `Olá ${name}, você agendou um horário para falar com nossa equipe!`,

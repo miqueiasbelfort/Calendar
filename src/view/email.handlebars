@@ -10,23 +10,10 @@
         body {
             width: 600px;
         }
-        .header {
-            width: 100%;
-            background-color: #fab702;
-            align-items: center;
-            justify-content: center;
-        }
         .title {
-            color: #fff;
+            color: #fab702;
             font-weight: bold;
-            text-decoration: underline;
-            text-align: center;
             padding: 10px 0;
-        }
-        .main{
-            width: 100%;
-            padding: 10px 20px;
-            background-color: #fff4d8;
         }
         .text {
             text-align: center;
@@ -47,23 +34,27 @@
         .linktex {
             text-align: center;
             font-weight: bold;
-            margin: 20px 0;
+            margin: 15px 0;
         }
     </style>
 
 </head>
 <body>
-    <div class="header">
-        <h1 class="title">Obrigado por ter escolhido a Ledercorp!</h1>
-    </div>
+    <h1 class="title">Obrigado por ter escolhido a Ledercorp!</h1>
     <div class="main">
+
         <h2 class="text">Não se esqueça do horário que você marcou conosco.</h2>
-        <p class="text">Caso houver alteração na data agendada ou hora, nosso time vai lhe notificar com um e-mail, para você não ficar perdido(a)!</p>
+        <p class="text">Caso houver alteração na data agendada ou hora, nosso time vai notificar você com um e-mail, para você não ficar perdido(a)!</p>
 
 
         <p class="info">Nossa reunião acontece na data: {{date}} as {{time}}{{timeType}}</p>
  
-        <p class="linktex">Acesse o meet para falar com um profissional do nosso time, <a href={{link}} class="link">Clique aqui!</a></p>
+        <p class="linktex">Acesse o meet para entrar na reunião, <a href='{{link}}' class="link">Clique aqui!</a></p>
+
+        <p>Acesse nosso site: <a href="https://ledercorp.com/" class="link">Clique qui!</a></p>
+        <p>Instagram: <a href="https://www.instagram.com/ledercorp/" class="link">@ledercop</a></p>
+        <p>Facebook: <a href="https://www.facebook.com/ledercorp/" class="link">Ledercorp Consultoria e Assessoria</a></p>
+        <p>WhatsApp: <a href="https://api.whatsapp.com/send?phone=5564996031749&text=Atendimento%20Via%20Whatsapp%20Ledercorp" class="link">Atendimento Via Whatsapp Ledercorp</a></p>
 
     </div>
 </body>

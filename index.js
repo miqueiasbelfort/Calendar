@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 })
 
 
-app.post('/create', async(req, res) => {
+app.post('/create-call', async(req, res) => {
     
   const {
       name,
@@ -33,7 +33,18 @@ app.post('/create', async(req, res) => {
       month,
       hours,
       minutes,
-      year
+      year,
+      
+      ocupation,
+      price,
+      exclint,
+      onesocialnetwork,
+      twosocialnetwork,
+      indication,
+      indicationName,
+      local,
+      desc,
+      attendance
   } = req.body
 
   // env
@@ -45,6 +56,15 @@ app.post('/create', async(req, res) => {
     EMPRESA: ${company}
     CONTATO: ${phoneNumber}
     EMAIL: ${email}
+    OCUPAÇÂO: ${ocupation}
+    VALOR COBRADO: R$ ${(price.toFixed(2)).toString().replace('.',',')}
+    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'}
+    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'}
+    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'}
+    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName}
+    UNIDADE DE ATENDIMENTO: ${local}
+    DESCRIÇÃO: ${desc}
+    ATENDIMENTO: ${attendance}
   `
   
     const numDate1End = Number(hours) + 1
@@ -147,6 +167,148 @@ app.post('/create', async(req, res) => {
         //link.data.hangoutLink
         return res.status(200).json({
           msg: link.data.hangoutLink
+        })
+
+})
+
+app.post('/create-presential', async(req, res) => {
+    
+  const {
+      name,
+      company,
+      phoneNumber,
+      email,
+      location,
+      day,
+      month,
+      hours,
+      minutes,
+      year,
+      ocupation,
+      price,
+      exclint,
+      onesocialnetwork,
+      twosocialnetwork,
+      indication,
+      indicationName,
+      local,
+      desc,
+      attendance
+  } = req.body
+
+  // env
+  const token = process.env.TOKEN
+  const clientId = process.env.CLIENT_ID
+  const apiKey = process.env.API_KEY
+
+  const description = `
+    EMPRESA: ${company}
+    CONTATO: ${phoneNumber}
+    EMAIL: ${email}
+    OCUPAÇÂO: ${ocupation}
+    VALOR COBRADO: ${price}
+    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'}
+    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'}
+    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'}
+    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName}
+    UNIDADE DE ATENDIMENTO: ${local}
+    DESCRIÇÃO: ${desc}
+    ATENDIMENTO: ${attendance}
+  `
+  
+    const numDate1End = minutes == '30' ? Number(hours) + 1 : Number(hours)
+    const minutesDefined = minutes == '30' ? '20' : '50'
+
+        let date1 = `${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":30";
+        let date2 = `${year}-${month}-${day}` + "T" + `${numDate1End < 10 ? '0' : ''}${numDate1End}` + `:${minutesDefined}` + ":30";
+
+
+        let x = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":00");
+        let y = new Date(`${year}-${month}-${day}` + "T" + hours + `:${minutes}` + ":00");
+
+        const hoursStart = x.getUTCHours()
+        const hoursEnd = y.getUTCHours() + 1
+
+        const addZeroStart = hoursStart < 10 ? '0' : ''
+        const addZeroEnd = hoursEnd < 10 ? '0' : ''
+
+        let end1 = `${year}-${month}-${day}` + "T" + `${addZeroStart}${hoursStart}` + ":" + `${(x.getMinutes())}${(x.getMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+        let end2 = `${year}-${month}-${day}` + "T" + `${addZeroEnd}${hoursEnd}` + ":" + `${(y.getMinutes())}${(y.getMinutes()) < 10 ?'0':''}` + ":00" + ".000Z";
+
+  
+        //setting details for teacher
+        let oAuth2Client = new OAuth2(
+            clientId,
+            apiKey
+        )
+
+        oAuth2Client.setCredentials({
+            refresh_token: token,
+        });
+
+        // Create a new calender instance.
+        let calendar = google.calendar({ version: 'v3', auth: oAuth2Client })
+
+
+        //checking whether teacher is budy or not
+        let result = await calendar.events.list({
+            calendarId: 'primary',
+            timeMin: end1,
+            timeMax: end2,
+            maxResults: 1,
+            singleEvents: true,
+            orderBy: 'startTime',
+            timeZone: 'America/Sao_Paulo'
+        });
+
+        let events = result.data.items;
+        let busy;
+
+        events.forEach(element => {
+          if(element){
+            busy = true
+          }
+        })
+
+
+        if(busy){
+          return res.status(422).json({msg: 'Erro in create a event'})
+        }
+
+        // Create a new event start date instance for teacher in their calendar.
+        const eventStartTime = new Date();
+        eventStartTime.setDate(day);
+        const eventEndTime = new Date();
+        eventEndTime.setDate(day);
+        eventEndTime.setMinutes(eventStartTime.getMinutes() + 45);
+
+        // Create a dummy event for temp users in our calendar
+        const event = {
+            summary: name,
+            location: location,
+            description: description,
+            colorId: 4,
+            start: {
+                dateTime: date1,
+                timeZone: 'America/Sao_Paulo',
+            },
+            end: {
+                dateTime: date2,
+                timeZone: 'America/Sao_Paulo',
+            },
+        }
+      
+        await calendar.events.insert({
+          calendarId: 'primary', 
+          conferenceDataVersion: '1', 
+          resource: event 
+        })
+
+       // console.log(link)
+        
+        //link.data.hangoutLink
+        return res.status(200).json({
+          msg: 'Event created with succesffuly'
         })
 
 })

@@ -7,55 +7,117 @@
     <title>Ledercorp - Horário agendado!</title>
 
     <style>
-        body {
-            width: 600px;
+        a {
+            text-decoration: none;
         }
-        .title {
-            color: #fab702;
-            font-weight: bold;
+        .container {
+            width: 100%;
+            height: 100%;
             padding: 10px 0;
         }
-        .text {
+        .header {
+            width: 100%;
+            background-color: rgb(241, 137, 0);
+            padding: 10px;
+        }
+        .header h1,  .header h3 {
+            text-align: center;
+            color: #fff;
+        }
+        .content {
+            width: 100%;
+            padding: 10px 30px;
+            align-items: center;
+            justify-content: center;
+        }
+        .content p {
+            font-size: 19px;
+            margin-left: 20px;
+        }
+
+        .linkContainer {
+            width: 100%;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .linkContainer a {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            font-weight: bold;
+            background-color: rgb(241, 137, 0);
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .footer {
+            width: 100%;
+            background-color: rgb(241, 137, 0);
+            padding: 10px 20px;
+        }
+        .footer p {
+            color: #fff;
+            font-size: 16px;
+            margin-top: -10px;
+        }
+        .end {
+            text-align: center;
+            margin: 15px;
+            color: #ccc;
+        }
+        .cont {
+            color: rgb(241, 137, 0);
             text-align: center;
             margin: 10px 0;
-            max-width: 100%;
-        }
-        .info {
-            text-align: center;
-            margin: 15px 0;
+            font-size: 19px;
             font-weight: bold;
-            font-style: italic;
-        }
-        .link {
-            color: #fab702;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .linktex {
-            text-align: center;
-            font-weight: bold;
-            margin: 15px 0;
         }
     </style>
 
 </head>
 <body>
-    <h1 class="title">Obrigado por ter escolhido a Ledercorp!</h1>
-    <div class="main">
+    <div class="container">
+        <header class="header">
+            <h1>Ledercorp Consultoria & Assessoria</h1>
+            <h3>Contato agendado atráves do App</h3>
+        </header>
+        <main class="content">
+            <p>Olá <strong>{{name}}</strong></p>
+            <p>Foi agendada uma reunião para <strong>"{{date}} as {{time}}{{timeType}}"</strong>, para tratarmos sobre o contato feito em nosso App.</p>
+            
+            {{#if isPresential}}
 
-        <h2 class="text">Não se esqueça do horário que você marcou conosco.</h2>
-        <p class="text">Caso houver alteração na data agendada ou hora, nosso time vai notificar você com um e-mail, para você não ficar perdido(a)!</p>
+                <p class="cont">Estamos contando com sua presença!</p>
 
+            {{else}}
 
-        <p class="info">Nossa reunião acontece na data: {{date}} as {{time}}{{timeType}}</p>
- 
-        <p class="linktex">Acesse o meet para entrar na reunião, <a href='{{link}}' class="link">Clique aqui!</a></p>
+                <p>Estamos felizes em te atender, basta clicar no link abaixo para ir direto ao Meet:</p>
 
-        <p>Acesse nosso site: <a href="https://ledercorp.com/" class="link">Clique qui!</a></p>
-        <p>Instagram: <a href="https://www.instagram.com/ledercorp/" class="link">@ledercop</a></p>
-        <p>Facebook: <a href="https://www.facebook.com/ledercorp/" class="link">Ledercorp Consultoria e Assessoria</a></p>
-        <p>WhatsApp: <a href="https://api.whatsapp.com/send?phone=5564996031749&text=Atendimento%20Via%20Whatsapp%20Ledercorp" class="link">Atendimento Via Whatsapp Ledercorp</a></p>
+                <div class="linkContainer">
+                    <a href="{{link}}" class="link">Participar do Meet</a>
+                </div>
 
+            {{/if}}
+
+            <p>Sinta-se a vontade para acessar o nosso site <a href="https://ledercorp.com/">ledercorp.com</a> e conhecer um pouco mais da nossa empresa!</p>
+            <p>Contate-nos através dos canais:</p>
+            <ul>
+                <li>Instagram: <a href="https://www.instagram.com/ledercorp/">@ledercorp</a></li>
+                <li>Facebook: <a href="https://www.facebook.com/ledercorp/">@fb.com/ledercorp</a></li>
+                <li>WhatsApp: <a href="https://api.whatsapp.com/send?phone=5564996031749&text=Atendimento%20Direcionado%20do%20*App%20da%20Ledercorp*.">(64) 9 9603-1749</a></li>
+            </ul>
+        </main>
+        <footer class="footer">
+            <p><strong>Ledercorp</strong> Consultoria & Assessoria.</p>
+            <p>{{address}}</p>
+            <p>{{addressWithCep}}, Brasil</p>
+        </footer>
+        <p class="end">© 2022 Ledercorp Consultoria e Assessoria - Todos os direitos reservados.</p>
     </div>
 </body>
 </html>

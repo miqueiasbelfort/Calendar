@@ -20,7 +20,6 @@ app.get('/', (req, res) => {
   })
 })
 
-
 app.post('/create-call', async(req, res) => {
     
   const {
@@ -320,8 +319,33 @@ app.post('/send', async (req, res) => {
     name,
     date,
     time,
-    link
+    link,
+    isPresential,
+    local
   } = req.body
+
+
+  let addressWithCep = ''
+  let address = ''
+
+  switch(local){
+    case 'Palmeiras de Goiás - GO':
+      addressWithCep = '76.190-000, Palmeiras de Goiás – GO'
+      address = 'Rua Abel Coimbra, N. 333, Qd. 47, Lt. 05-B, Sala 01,Setor Central.'
+    break
+    case 'Goiânia - GO':
+      addressWithCep = '74.150-040, Setor Marista, Goiânia – GO'
+      address = 'Av. D (esq. com Rua 09), 419, Qd. G-11, Lt. 01, 4º Andar, Edifício Marista.'
+    break
+    case 'Rio de Janeiro - RJ':
+      addressWithCep = '22290-240, Botafogo, Rio de Janeiro – RJ'
+      address = 'Av. Pasteur, 110.'
+    break
+    case 'São Paulo - SP':
+      addressWithCep = '04538-133, Itaim Bibi, São Paulo – SP'
+      address = 'Av. Brigadeiro Faria Lima, 4221.'
+    break
+  }
 
   const trasporter = nodemailer.createTransport({
     service: 'gmail',
@@ -345,6 +369,7 @@ app.post('/send', async (req, res) => {
     extName: '.handlebars'
   }))
     
+    
   try {
     
     const timerSplit = time.split(':')
@@ -360,7 +385,11 @@ app.post('/send', async (req, res) => {
         date: date,
         time: time,
         link: link,
-        timeType: `${numTimer > 12 ? 'pm' : 'am'}`
+        timeType: `${numTimer > 12 ? 'pm' : 'am'}`,
+        name,
+        isPresential,
+        addressWithCep,
+        address
       }
     })
     return res.status(200).json('Email Send')

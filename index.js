@@ -52,18 +52,18 @@ app.post('/create-call', async(req, res) => {
   const apiKey = process.env.API_KEY
 
   const description = `
-    EMPRESA: ${company}
-    CONTATO: ${phoneNumber}
-    EMAIL: ${email}
-    OCUPAÇÂO: ${ocupation}
-    VALOR COBRADO: R$ ${(price.toFixed(2)).toString().replace('.',',')}
-    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'}
-    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'}
-    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'}
-    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName}
-    UNIDADE DE ATENDIMENTO: ${local}
-    DESCRIÇÃO: ${desc}
-    ATENDIMENTO: ${attendance}
+    EMPRESA: ${company};
+    CONTATO: ${phoneNumber};
+    EMAIL: ${email};
+    OCUPAÇÂO: ${ocupation};
+    VALOR COBRADO: R$ ${(price.toFixed(2)).toString().replace('.',',')};
+    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'};
+    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'};
+    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'};
+    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName};
+    UNIDADE DE ATENDIMENTO: ${local};
+    DESCRIÇÃO: ${desc};
+    ATENDIMENTO: ${attendance};
   `
   
     const numDate1End = Number(hours) + 1
@@ -201,18 +201,18 @@ app.post('/create-presential', async(req, res) => {
   const apiKey = process.env.API_KEY
 
   const description = `
-    EMPRESA: ${company}
-    CONTATO: ${phoneNumber}
-    EMAIL: ${email}
-    OCUPAÇÂO: ${ocupation}
-    VALOR COBRADO: ${price}
-    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'}
-    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'}
-    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'}
-    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName}
-    UNIDADE DE ATENDIMENTO: ${local}
-    DESCRIÇÃO: ${desc}
-    ATENDIMENTO: ${attendance}
+    EMPRESA: ${company};
+    CONTATO: ${phoneNumber};
+    EMAIL: ${email};
+    OCUPAÇÂO: ${ocupation};
+    VALOR COBRADO: ${(price.toFixed(2)).toString().replace('.',',')};
+    È UM EX-CLIENTE: ${exclint ? 'Sim' : 'Não'};
+    SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'};
+    SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'};
+    FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName};
+    UNIDADE DE ATENDIMENTO: ${local};
+    DESCRIÇÃO: ${desc};
+    ATENDIMENTO: ${attendance};
   `
   
     const numDate1End = minutes == '30' ? Number(hours) + 1 : Number(hours)
@@ -403,4 +403,4 @@ app.post('/send', async (req, res) => {
 
 })
 
-app.listen(process.env.PORT || 5000, () => console.log('Server is running!'))
+app.listen(process.env.PORT || 5000)

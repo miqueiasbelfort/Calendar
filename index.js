@@ -145,7 +145,7 @@ app.post('/create-call', async(req, res) => {
       
         try {
           
-          let link = calendar.events.insert({
+          let link = await calendar.events.insert({
             calendarId: 'primary', 
             conferenceDataVersion: '1', 
             resource: event 
@@ -281,7 +281,7 @@ app.post('/create-presential', async(req, res) => {
       
         try {
           
-          let link = calendar.events.insert({
+          let link = await calendar.events.insert({
             calendarId: 'primary', 
             conferenceDataVersion: '1', 
             resource: event 

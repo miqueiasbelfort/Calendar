@@ -145,7 +145,7 @@ app.post('/create-call', async(req, res) => {
       
         try {
           
-          let link = await calendar.events.insert({
+          let link = calendar.events.insert({
             calendarId: 'primary', 
             conferenceDataVersion: '1', 
             resource: event 
@@ -281,7 +281,7 @@ app.post('/create-presential', async(req, res) => {
       
         try {
           
-          let link = await calendar.events.insert({
+          let link = calendar.events.insert({
             calendarId: 'primary', 
             conferenceDataVersion: '1', 
             resource: event 
@@ -364,7 +364,7 @@ app.post('/send', async (req, res) => {
     const numTimer = Number(timerSplit[0])
     //console.log(numTimer)
 
-    await trasporter.sendMail({
+    trasporter.sendMail({
       subject: `Olá ${name}, você agendou um horário para falar com nossa equipe!`,
       from: `Ledercorp <se8292829@gmail.com>`,
       to: [email],

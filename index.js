@@ -111,18 +111,6 @@ app.post('/create-call', async(req, res) => {
         });
 
         let events = result.data.items;
-        let busy;
-
-        events.forEach(element => {
-          if(element){
-            busy = true
-          }
-        })
-
-
-        if(busy){
-          return res.status(422).json({msg: 'Horário Ocupado!'})
-        }
 
         // Create a new event start date instance for teacher in their calendar.
         const eventStartTime = new Date();
@@ -155,18 +143,24 @@ app.post('/create-call', async(req, res) => {
             },
         }
       
-        let link = await calendar.events.insert({
-          calendarId: 'primary', 
-          conferenceDataVersion: '1', 
-          resource: event 
-        })
+        try {
+          
+          let link = await calendar.events.insert({
+            calendarId: 'primary', 
+            conferenceDataVersion: '1', 
+            resource: event 
+          })
+  
+         // console.log(link)
+          
+          //link.data.hangoutLink
+          return res.status(200).json({
+            msg: link.data.hangoutLink
+          })
 
-       // console.log(link)
-        
-        //link.data.hangoutLink
-        return res.status(200).json({
-          msg: link.data.hangoutLink
-        })
+        } catch (error) {
+          return res.status(500).json(error)
+        }
 
 })
 
@@ -261,18 +255,6 @@ app.post('/create-presential', async(req, res) => {
         });
 
         let events = result.data.items;
-        let busy;
-
-        events.forEach(element => {
-          if(element){
-            busy = true
-          }
-        })
-
-
-        if(busy){
-          return res.status(422).json({msg: 'Erro in create a event'})
-        }
 
         // Create a new event start date instance for teacher in their calendar.
         const eventStartTime = new Date();
@@ -297,18 +279,24 @@ app.post('/create-presential', async(req, res) => {
             },
         }
       
-        await calendar.events.insert({
-          calendarId: 'primary', 
-          conferenceDataVersion: '1', 
-          resource: event 
-        })
+        try {
+          
+          let link = await calendar.events.insert({
+            calendarId: 'primary', 
+            conferenceDataVersion: '1', 
+            resource: event 
+          })
+  
+         // console.log(link)
+          
+          //link.data.hangoutLink
+          return res.status(200).json({
+            msg: link.data.hangoutLink
+          })
 
-       // console.log(link)
-        
-        //link.data.hangoutLink
-        return res.status(200).json({
-          msg: 'Event created with succesffuly'
-        })
+        } catch (error) {
+          return res.status(500).json(error)
+        }
 
 })
 
@@ -376,7 +364,7 @@ app.post('/send', async (req, res) => {
     const numTimer = Number(timerSplit[0])
     //console.log(numTimer)
 
-    await trasporter.sendMail({
+    trasporter.sendMail({
       subject: `Olá ${name}, você agendou um horário para falar com nossa equipe!`,
       from: `Ledercorp <se8292829@gmail.com>`,
       to: [email],

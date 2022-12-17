@@ -41,6 +41,8 @@ app.post('/create-call', async(req, res) => {
       twosocialnetwork,
       indication,
       indicationName,
+      ocmIndication,
+      ocmIndicationName,
       local,
       desc,
       attendance
@@ -61,6 +63,7 @@ app.post('/create-call', async(req, res) => {
     SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'};
     SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'};
     FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName};
+    INDICAÇÃO OMC: ${ocmIndication ? 'Sim' : 'Não'} - ${ocmIndicationName};
     UNIDADE DE ATENDIMENTO: ${local};
     DESCRIÇÃO: ${desc};
     ATENDIMENTO: ${attendance};
@@ -178,6 +181,8 @@ app.post('/create-presential', async(req, res) => {
       twosocialnetwork,
       indication,
       indicationName,
+      ocmIndication,
+      ocmIndicationName,
       local,
       desc,
       attendance
@@ -198,6 +203,7 @@ app.post('/create-presential', async(req, res) => {
     SEGUE UMA REDE SOCIAL: ${onesocialnetwork ? 'Sim' : 'Não'};
     SEGUE MAIS DE UMA REDE SOCIAL: ${twosocialnetwork ? 'Sim' : 'Não'};
     FOI INDICADO: ${indication ? 'Sim' : 'Não'} - ${indicationName};
+    INDICAÇÃO OMC: ${ocmIndication ? 'Sim' : 'Não'} - ${ocmIndicationName};
     UNIDADE DE ATENDIMENTO: ${local};
     DESCRIÇÃO: ${desc};
     ATENDIMENTO: ${attendance};
